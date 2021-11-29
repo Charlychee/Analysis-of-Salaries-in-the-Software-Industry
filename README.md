@@ -18,6 +18,8 @@ Requires Anaconda
 ### Activate the Environment
 - `conda activate ECE143-Group5-Project`
 
+### Unzip data.zip
+
 ### [Run](#file-structure) AnalysisOfSoftwareDeveloperSalary.ipynb
 
 ### Deactivate and Remove the Environment
@@ -25,7 +27,7 @@ Requires Anaconda
 - `conda env remove --name ECE143-Group5-Project`
 
 ## File Structure
-The data we used can be found in the [data folder](./data/). It contains data surveyed and additional information provided by [StackOverflow](https://insights.stackoverflow.com/survey).
+The data we used can be found in the [data zip](./data.zip). It should be unzipped for the python files and notebooks to be able to access the data CSVs inside of it. The data folder contains data surveyed and additional information provided by [StackOverflow](https://insights.stackoverflow.com/survey).
 
 The code used to wrangle the survey data can be found in the [wrangling.py](./wrangling.py) file.
 
