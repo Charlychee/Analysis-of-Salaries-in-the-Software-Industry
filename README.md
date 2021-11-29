@@ -1,0 +1,32 @@
+# Analysis of Factors Contributing to Software Developer Salary
+ECE 143 Group 5
+
+Third-Party Modules Used:
+- `numpy 1.21.2`
+- `pandas 1.3.4`
+- `plotly 5.1.0`
+
+## Installation
+Requires Anaconda
+
+### Clone the Repository:
+- `git clone https://github.com/kushagraagrawal/ECE143-Group5-Project`
+
+### Create an Anaconda Virtual Environment
+- `conda create --name ECE143-Group5-Project --file=requirements.txt`
+
+### Activate the Environment
+- `conda activate ECE143-Group5-Project`
+
+### [Run](#file-structure) AnalysisOfSoftwareDeveloperSalary.ipynb
+
+### Deactivate and Remove the Environment
+- `conda deactivate`
+- `conda env remove --name ECE143-Group5-Project`
+
+## File Structure
+The data we used can be found in the [data folder](./data/). It contains data surveyed and additional information provided by [StackOverflow](https://insights.stackoverflow.com/survey).
+
+The code used to wrangle the survey data can be found in the [wrangling.py](./wrangling.py) file.
+
+The visualizations to our analysis can be found in the [Analysis.ipynb](./Analysis.ipynb)
