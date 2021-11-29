@@ -19,6 +19,30 @@ class Technologies:
 
     '''Columns of interest in the dataframe''' 
     relevantColumns = ['LanguageHaveWorkedWith', 'DatabaseHaveWorkedWith', 'PlatformHaveWorkedWith', 'WebframeHaveWorkedWith', 'ToolsTechHaveWorkedWith']
+    interested_professions = list()
+
+    def get_df_dict(self, df, final_dict, input_obj, k):
+        '''
+            function to create dictionary of k most popular technologies for each unique profession
+            :param df: input df
+            :type df: pandas dataframe
+            :param final_dict: the output dictionary
+            :type final_dict: defaultdict
+            :param input_obj: object of class Technologies
+            :type input_obj: Technologies
+            :param k: value specifying number of items to be added to dict
+            :type k: int
+        '''
+        assert(isinstance(final_dict, dict))
+        assert(isinstance(input_obj, Technologies))
+        assert(isinstance(k, int))
+        assert(k > 0)
+        for prof in self.interested_professions:
+            final_dict[prof]['languages'] = input_obj.getkMostPopularTechnologies(input_obj.languageDf, prof, ['ResponseId', 'abs_comp_k', 'DevType', 'curr_symbol'], k)
+            final_dict[prof]['database'] = input_obj.getkMostPopularTechnologies(input_obj.databaseDf, prof, ['ResponseId', 'abs_comp_k', 'DevType', 'curr_symbol'], k)
+            final_dict[prof]['platform'] = input_obj.getkMostPopularTechnologies(input_obj.platformDf, prof, ['ResponseId', 'abs_comp_k', 'DevType', 'curr_symbol'], k)
+            final_dict[prof]['webFramework'] = input_obj.getkMostPopularTechnologies(input_obj.webFrameWorkDf, prof, ['ResponseId', 'abs_comp_k', 'DevType', 'curr_symbol'], k)
+            final_dict[prof]['tools'] = input_obj.getkMostPopularTechnologies(input_obj.toolsDf, prof, ['ResponseId', 'abs_comp_k', 'DevType', 'curr_symbol'], k)
 
     def createUSDDicts(self, dataframe, avoidCols):
         '''
@@ -142,6 +166,11 @@ class Technologies:
         bool_df = pd.concat([bool_df, self.boolean_df(df[column], value_dict.keys())], axis=1)
         bool_df['curr_symbol'] = df['curr_symbol']
         bool_df['abs_comp_k'] = df['abs_comp_k']
+
+        unique_professions = self.to_1D(df['DevType'].map(self.splitString)).value_counts().to_dict()
+        unique_professions.pop('nan')
+        self.interested_professions = list(unique_professions.keys())
+
         if(column == 'LanguageHaveWorkedWith'):
             self.languageDf = bool_df
             self.languageDict = value_dict
