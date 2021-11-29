@@ -43,8 +43,8 @@ class Technologies:
         dfDictUSD = defaultdict(list)
         for col in dfUSD.columns:
             if(col not in avoidCols):
-                df = dfUSD[dfUSD[col] == 1][[col, 'CompTotal']]
-                dfDictUSD[col] = df['CompTotal'].tolist()
+                df = dfUSD[dfUSD[col] == 1][[col, 'abs_comp_k']]
+                dfDictUSD[col] = df['abs_comp_k'].tolist()
         return dfDictUSD
 
     def splitString(self, inputStr):
@@ -140,10 +140,8 @@ class Technologies:
         bool_df['ResponseId'] = df['ResponseId']
         bool_df['DevType'] = df['DevType']
         bool_df = pd.concat([bool_df, self.boolean_df(df[column], value_dict.keys())], axis=1)
-        bool_df['curr_symbol'] = df['Currency'].str[:3]
-        bool_df['CompTotal'] = df['CompTotal'] / 1000
-        bool_df = bool_df[bool_df['curr_symbol'].isin(['USD'])] # only picking USD
-        bool_df = bool_df[bool_df['CompTotal'] <= 300] # only picking USD
+        bool_df['curr_symbol'] = df['curr_symbol']
+        bool_df['abs_comp_k'] = df['abs_comp_k']
         if(column == 'LanguageHaveWorkedWith'):
             self.languageDf = bool_df
             self.languageDict = value_dict
