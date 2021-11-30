@@ -19,7 +19,7 @@ class Technologies:
 
     '''Columns of interest in the dataframe''' 
     relevantColumns = ['LanguageHaveWorkedWith', 'DatabaseHaveWorkedWith', 'PlatformHaveWorkedWith', 'WebframeHaveWorkedWith', 'ToolsTechHaveWorkedWith']
-    interested_professions = list()
+    interested_professions = ['Developer, full-stack', 'Developer, embedded applications or devices','Developer, back-end', 'Engineer, data', 'Data scientist or machine learning specialist']
 
     def get_df_dict(self, df, final_dict, input_obj, k):
         '''
@@ -44,7 +44,7 @@ class Technologies:
             final_dict[prof]['webFramework'] = input_obj.getkMostPopularTechnologies(input_obj.webFrameWorkDf, prof, ['ResponseId', 'abs_comp_k', 'DevType', 'curr_symbol'], k)
             final_dict[prof]['tools'] = input_obj.getkMostPopularTechnologies(input_obj.toolsDf, prof, ['ResponseId', 'abs_comp_k', 'DevType', 'curr_symbol'], k)
 
-    def createUSDDicts(self, dataframe, avoidCols):
+    def createUSDDf(self, dataframe, avoidCols, colNames):
         '''
             Function to separate dataframe into dicts containing labels and list of salaries associated with label
             Separates into two dicts, one for Euro and one for US Dollars
@@ -52,24 +52,23 @@ class Technologies:
             :type dataframe: pandas dataframe
             :param avoidCols: columns to avoid
             :type avoidCols: list of string
+            :param colNames: 2 value array with column names for df
+            :type colNames: list of string
             :return: two dicts for Euro and USD
         '''
         assert(isinstance(dataframe, pd.DataFrame))
         assert(isinstance(avoidCols, list))
         for item in avoidCols:
             assert(isinstance(item, str))
-        # dfEuro = dataframe[dataframe['curr_symbol'] == 'EUR']
-        # dfEuro = dfEuro.dropna()
-        dfUSD  = dataframe[dataframe['curr_symbol'] == 'USD']
-        dfUSD  = dfUSD.dropna()
+        resultDf = pd.DataFrame(columns=[colNames[0], colNames[1]])
 
-        # dfDictEuro = defaultdict(list)
-        dfDictUSD = defaultdict(list)
-        for col in dfUSD.columns:
+        for col in dataframe.columns:
             if(col not in avoidCols):
-                df = dfUSD[dfUSD[col] == 1][[col, 'abs_comp_k']]
-                dfDictUSD[col] = df['abs_comp_k'].tolist()
-        return dfDictUSD
+                df = dataframe[dataframe[col] == 1][[col, 'abs_comp_k']]
+                df.replace({col: 1}, str(col), inplace=True)
+                df.rename(columns={col:colNames[0], 'abs_comp_k': colNames[1]}, inplace=True)
+                resultDf = resultDf.append(df)
+        return resultDf
 
     def splitString(self, inputStr):
         '''
@@ -162,14 +161,11 @@ class Technologies:
             value_dict.pop('nan', None)
         bool_df = pd.DataFrame()
         bool_df['ResponseId'] = df['ResponseId']
-        bool_df['DevType'] = df['DevType']
+        bool_df['DevType'] = df['DevType'].map(self.splitString)
         bool_df = pd.concat([bool_df, self.boolean_df(df[column], value_dict.keys())], axis=1)
+        bool_df = bool_df.explode('DevType')
         bool_df['curr_symbol'] = df['curr_symbol']
         bool_df['abs_comp_k'] = df['abs_comp_k']
-
-        unique_professions = self.to_1D(df['DevType'].map(self.splitString)).value_counts().to_dict()
-        unique_professions.pop('nan')
-        self.interested_professions = list(unique_professions.keys())
 
         if(column == 'LanguageHaveWorkedWith'):
             self.languageDf = bool_df
