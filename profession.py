@@ -1,6 +1,7 @@
 import pandas as pd
 import os
 from collections import defaultdict
+import numpy as np
 
 class Technologies:
     '''
@@ -19,7 +20,7 @@ class Technologies:
 
     '''Columns of interest in the dataframe''' 
     relevantColumns = ['LanguageHaveWorkedWith', 'DatabaseHaveWorkedWith', 'PlatformHaveWorkedWith', 'WebframeHaveWorkedWith', 'ToolsTechHaveWorkedWith']
-    interested_professions = ['Developer, full-stack', 'Developer, embedded applications or devices','Developer, back-end', 'Engineer, data', 'Data scientist or machine learning specialist']
+    interested_professions = ['Full-Stack Developers', 'Embedded Developers','Backend Developer', 'Data Engineer', 'Data Scientist']
 
     def get_df_dict(self, df, final_dict, input_obj, k):
         '''
@@ -96,6 +97,19 @@ class Technologies:
         inputDict = inputDf.mean(axis=0).to_dict()
         return dict(sorted(inputDict.items(), key=lambda item: item[1], reverse=True)[:k])
 
+    def updateProf(self, df):
+        '''
+            helper function to update the professions to shorter names
+            :param df: input df
+            :type df: pd Dataframe
+        '''
+        assert(isinstance(df, pd.DataFrame))
+        df['DevType'] = np.where(df['DevType'] == 'Engineer, data', 'Data Engineer', df['DevType'])
+        df['DevType'] = np.where(df['DevType'] == 'Data scientist or machine learning specialist', 'Data Scientist', df['DevType'])
+        df['DevType'] = np.where(df['DevType'] == 'Developer, back-end', 'Backend Developer', df['DevType'])
+        df['DevType'] = np.where(df['DevType'] == 'Developer, embedded applications or devices', 'Embedded Developers', df['DevType'])
+        df['DevType'] = np.where(df['DevType'] == 'Developer, full-stack', 'Full-Stack Developers', df['DevType'])
+
     def getkMostPopularTechnologies(self, inputDf, prof, columns_to_avoid, k):
         '''
             Function that returns k most popular technologies in dataframe df
@@ -166,6 +180,7 @@ class Technologies:
         bool_df = bool_df.explode('DevType')
         bool_df['curr_symbol'] = df['curr_symbol']
         bool_df['abs_comp_k'] = df['abs_comp_k']
+        self.updateProf(bool_df)
 
         if(column == 'LanguageHaveWorkedWith'):
             self.languageDf = bool_df
