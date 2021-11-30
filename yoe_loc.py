@@ -1,11 +1,9 @@
 import pandas as pd
 import numpy as np
 import seaborn as sns
+import plotly.express as px
 import matplotlib.pyplot as plt
-import patsy
-import statsmodels.api as sm
 
-from scipy import stats
 
 # Read file
 file = pd.read_csv('stack-overflow-developer-survey-2021/survey_results_public.csv')
@@ -75,28 +73,19 @@ class yoe():
 
     def regression(self):
         self.convertComp2USD()
+        self.yoe['YearsCodePro'] = pd.to_numeric(self.yoe['YearsCodePro'])
         # show regression model and scatter plot
-        sns.set(rc={'figure.figsize': (15, 8)})
-        sns.lmplot(y='abs_comp_k', x='YearsCodePro', data=self.yoe, line_kws={'color': 'orange'})
-        plt.show()
-
-    # def regression_parameters(self):
-    #     outcome, predictors = patsy.dmatrices('abs_comp_k ~ YearsCodePro', yoe)
-    #     model = sm.OLS(outcome, predictors)
-    #     result = model.fit()
-    #     print(result.summary())
-    #
-    #     # Plot original graph
-    #     plot1 = sns.scatterplot(alpha=0.1, x='YearsCodePro', y='abs_comp_k', data=yoe)
-    #     plot1.set(title='Years vs Salary', xlabel='YearsCodePro', ylabel='abs_comp_k')
-    #     sns.despine();
-    #
-    #     # Generate and plot the model fit line
-    #     xs = np.arange(yoe['YearsCodePro'].min(), yoe['YearsCodePro'].max())  # Range
-    #     ys = 2.5715 * xs + 101.6436  # Retrieved from OLS regression results
-    #     plt.plot(xs, ys, '--k', linewidth=4, label='Regression Model')
-    #     plt.legend();
-    #     # plt.savefig("regression.png")
+        fig = px.scatter(yoe, y='abs_comp_k', x='YearsCodePro', trendline="ols")
+        fig.update_xaxes(
+            title_text="Years of Experience",
+            tickangle=-45,
+            title_font={"size": 20},
+            title_standoff=25)
+        fig.update_yaxes(
+            title_text="Annual Salary (in K)",
+            title_font={"size": 20},
+            title_standoff=25)
+        fig.show()
 
 class loc():
 
@@ -109,6 +98,8 @@ class loc():
 
 
         location = wrangleComp(location)
+
+        # euro countries
         euro_country = location[location['Country'].isin(
             ['Belgium', 'Bulgaria', 'Croatia', 'Cyprus', 'Czechia', 'Finland', 'France', 'Germany', 'Greece', 'Hungary',
              'Ireland',
@@ -116,10 +107,20 @@ class loc():
              'Poland', 'Portugal', 'Romania', 'Slovakia', 'Slovenia', 'Spain', 'Sweden'])]
 
         # show plot
-        plt.figure(figsize=(15, 8))
-        ax = sns.boxplot(x='Country', y='abs_comp_k', data=euro_country)
-        ax.set_xticklabels(ax.get_xticklabels(), rotation=45)
-        plt.show()
+        order = euro_country.groupby(by=["Country"])['abs_comp_k'].median().sort_values(ascending=False).index
+        order = {'Country': list(order)}
+
+        fig = px.box(euro_country, x="Country", y="abs_comp_k", category_orders=order)
+        fig.update_xaxes(
+            tickangle=-45,
+            title_font={"size": 20},
+            title_standoff=25)
+        fig.update_yaxes(
+            title_text="Annual Salary (in K)",
+            title_font={"size": 20},
+            title_standoff=25)
+
+        fig.show()
 
 
     def us_states(self):
@@ -134,9 +135,21 @@ class loc():
         us_states = us_states[us_states['US_State'].isin(
             ['Washington', 'California', 'New Jersey', 'New York', 'Massachusetts', 'Texas', 'Colorado', 'Hawaii'])]
 
-        plt.figure(figsize=(15, 8))
-        sns.boxplot(x='US_State', y='abs_comp_k', data=us_states)
-        plt.show()
+        order = us_states.groupby(by=["US_State"])['abs_comp_k'].median().sort_values(ascending=False).index
+        order = {'US_State': list(order)}
+
+        fig = px.box(us_states, x="US_State", y="abs_comp_k", category_orders=order)
+        fig.update_xaxes(
+            title_text="US State",
+            tickangle=-45,
+            title_font={"size": 20},
+            title_standoff=25)
+        fig.update_yaxes(
+            title_text="Annual Salary (in K)",
+            title_font={"size": 20},
+            title_standoff=25)
+
+        fig.show()
 
 if __name__ == '__main__':
     yoe_model = yoe()

@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
 
-
 class Wrangling:
     """
     This class performs data wrangling for different columns in the dataset
@@ -9,6 +8,7 @@ class Wrangling:
 
     def removeOutliers(self, df, col_name):
         """
+
         This method removes outliers which based on q1 - (1.5 * IQR) and
         q3 - (1.5 * IQR)
         :param df: [pd.DataFrame] Input Dataframe
@@ -29,7 +29,8 @@ class Wrangling:
 
     def wrangleComp(self, df):
         """
-        This method
+        This method wrangles the 'CompTotal' column present in df. It removes the missing values,
+        filters for currency in 'USD' and converts it into annual compensation in thousands
         :param df:[pd.DataFrame] Input Dataframe
         :return: [pd.DataFrame] Output Dataframe with wrangled columns
         """
@@ -65,9 +66,12 @@ class Wrangling:
         assert 'EdLevel' in df.columns.values, "Dataframe is missing the column 'EdLevel'"
         df_edu = df.dropna(subset=['EdLevel'])
         df_edu['edu_level'] = df_edu.EdLevel.str.partition(sep='(', expand=True)[0]
-
         df_edu = df_edu.replace(to_replace={'Some college/university study without earning a degree': \
                                                 "College/University without degree"})
+        df_edu = df_edu[df_edu.edu_level.isin(["Master’s degree ",
+                                "Bachelor’s degree ", "Other doctoral degree ",
+       "Associate degree ", "College/University without degree",
+       "Professional degree "])]
         return df_edu
 
     def wrangleOrgSize(self, df):

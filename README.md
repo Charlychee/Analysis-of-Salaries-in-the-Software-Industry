@@ -12,7 +12,7 @@ Requires Anaconda
 ### Clone the Repository:
 - `git clone https://github.com/kushagraagrawal/ECE143-Group5-Project`
 
-### Create an Anaconda Virtual Environment
+### Create a Anaconda Virtual Environment
 - `conda create --name ECE143-Group5-Project --file=requirements.txt`
 
 ### Activate the Environment
