@@ -61,6 +61,9 @@ def wrangleComp(df):
 class yoe():
     # years of experience
     def convertComp2USD(self):
+        '''
+        :return: convert the compensation to annual salary in USD
+        '''
         yoe = file[["ResponseId","YearsCodePro","ConvertedCompYearly","Currency",'CompTotal', 'CompFreq']]
 
         # Set "prefer not to say" to NaN and drop
@@ -74,6 +77,7 @@ class yoe():
 
     def regression(self):
         self.convertComp2USD()
+
         self.yoe['YearsCodePro'] = pd.to_numeric(self.yoe['YearsCodePro'])
         # show regression model and scatter plot
         fig = px.scatter(yoe, y='abs_comp_k', x='YearsCodePro', trendline="ols", trendline_color_override='black',
@@ -97,6 +101,10 @@ class yoe():
 class loc():
 
     def euro(self):
+        '''
+
+        :return: show european countries vs salary plot
+        '''
         location= file[["ResponseId", "Country","ConvertedCompYearly","Currency",'CompTotal', 'CompFreq']]
 
         # Set "prefer not to say" to NaN and drop
@@ -141,6 +149,10 @@ class loc():
 
 
     def us_states(self):
+        '''
+
+        :return: show US States vs salary plot
+        '''
 
         us_states = file[["ResponseId", "US_State","ConvertedCompYearly","Currency",'CompTotal', 'CompFreq']]
 
@@ -149,6 +161,7 @@ class loc():
 
         us_states = wrangleComp(us_states)
 
+        # Top 8 states with highest median salary
         us_states = us_states[us_states['US_State'].isin(
             ['Washington', 'California', 'New Jersey', 'New York', 'Massachusetts', 'Texas', 'Colorado', 'Hawaii'])]
 
