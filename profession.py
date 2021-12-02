@@ -20,7 +20,7 @@ class Technologies:
 
     '''Columns of interest in the dataframe''' 
     relevantColumns = ['LanguageHaveWorkedWith', 'DatabaseHaveWorkedWith', 'PlatformHaveWorkedWith', 'WebframeHaveWorkedWith', 'ToolsTechHaveWorkedWith']
-    interested_professions = ['Full-Stack Developers', 'Embedded Developers','Backend Developer', 'Data Engineer', 'Data Scientist']
+    interested_professions = ['Full-Stack Developers', 'Embedded Developers','Backend Developer', 'Frontend developers', 'Data Engineer', 'Data Scientist', 'DevOps specialist', 'QA developers']
 
     def get_df_dict(self, df, final_dict, input_obj, k):
         '''
@@ -109,6 +109,8 @@ class Technologies:
         df['DevType'] = np.where(df['DevType'] == 'Developer, back-end', 'Backend Developer', df['DevType'])
         df['DevType'] = np.where(df['DevType'] == 'Developer, embedded applications or devices', 'Embedded Developers', df['DevType'])
         df['DevType'] = np.where(df['DevType'] == 'Developer, full-stack', 'Full-Stack Developers', df['DevType'])
+        df['DevType'] = np.where(df['DevType'] == 'Developer, QA or test', 'QA developers', df['DevType'])
+        df['DevType'] = np.where(df['DevType'] == 'Developer, front-end', 'Frontend developers', df['DevType'])
 
     def getkMostPopularTechnologies(self, inputDf, prof, columns_to_avoid, k):
         '''
