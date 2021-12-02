@@ -32,3 +32,5 @@ The data we used can be found in the [data zip](./data.zip). It should be unzipp
 The code used to wrangle the survey data can be found in the [wrangling](./wrangling) directory.
 
 The visualizations to our analysis can be found in the [AnalysisOfSalariesSoftwareIndustry.ipynb](./AnalysisOfSalariesSoftwareIndustry.ipynb)
+
+### Note: To easily browse the notebook through your internet browser for a quick look, go to this [link](https://nbviewer.org/github/Charlychee/Analysis-of-Salaries-in-the-Software-Industry/blob/master/AnalysisOfSalariesSoftwareIndustry.ipynb).
