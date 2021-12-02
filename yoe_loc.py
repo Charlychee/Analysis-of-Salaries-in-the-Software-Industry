@@ -1,8 +1,9 @@
 import pandas as pd
 import numpy as np
+from datetime import datetime
 import seaborn as sns
 import plotly.express as px
-import matplotlib.pyplot as plt
+
 
 
 # Read file
@@ -75,7 +76,13 @@ class yoe():
         self.convertComp2USD()
         self.yoe['YearsCodePro'] = pd.to_numeric(self.yoe['YearsCodePro'])
         # show regression model and scatter plot
-        fig = px.scatter(yoe, y='abs_comp_k', x='YearsCodePro', trendline="ols")
+        fig = px.scatter(yoe, y='abs_comp_k', x='YearsCodePro', trendline="ols", trendline_color_override='black',
+                         color_discrete_sequence=['rgba(63,68,73,0.05)'])
+        fig.update_layout({
+            'paper_bgcolor': 'rgba(0,0,0,0)',
+            'plot_bgcolor': 'rgba(0,0,0,0)',
+            'font_color': 'rgba(0,0,0,255)'
+        })
         fig.update_xaxes(
             title_text="Years of Experience",
             tickangle=-45,
@@ -85,7 +92,7 @@ class yoe():
             title_text="Annual Salary (in K)",
             title_font={"size": 20},
             title_standoff=25)
-        fig.show()
+        fig.show(
 
 class loc():
 
@@ -110,16 +117,26 @@ class loc():
         order = euro_country.groupby(by=["Country"])['abs_comp_k'].median().sort_values(ascending=False).index
         order = {'Country': list(order)}
 
-        fig = px.box(euro_country, x="Country", y="abs_comp_k", category_orders=order)
+        fig = px.box(euro_country, x="Country", y="abs_comp_k", category_orders=order,
+                     color_discrete_sequence=['rgba(63,68,73,255)'])
+        fig.update_layout({
+            'paper_bgcolor': 'rgba(0,0,0,0)',
+            'plot_bgcolor': 'rgba(0,0,0,0)',
+            'font_color': 'rgba(0,0,0,255)'
+        })
+
         fig.update_xaxes(
             tickangle=-45,
+            tickfont_size=15,
+            tickcolor='black',
             title_font={"size": 20},
             title_standoff=25)
         fig.update_yaxes(
             title_text="Annual Salary (in K)",
+            tickfont_size=15,
+            tickcolor='black',
             title_font={"size": 20},
             title_standoff=25)
-
         fig.show()
 
 
@@ -138,18 +155,29 @@ class loc():
         order = us_states.groupby(by=["US_State"])['abs_comp_k'].median().sort_values(ascending=False).index
         order = {'US_State': list(order)}
 
-        fig = px.box(us_states, x="US_State", y="abs_comp_k", category_orders=order)
+        fig = px.box(us_states, x="US_State", y="abs_comp_k", category_orders=order,
+                     color_discrete_sequence=['rgba(63,68,73,255)'])
+        fig.update_layout({
+            'paper_bgcolor': 'rgba(0,0,0,0)',
+            'plot_bgcolor': 'rgba(0,0,0,0)',
+            'font_color': 'rgba(0,0,0,255)'
+        })
+
         fig.update_xaxes(
             title_text="US State",
             tickangle=-45,
+            tickfont_size=15,
+            tickcolor='black',
             title_font={"size": 20},
             title_standoff=25)
         fig.update_yaxes(
             title_text="Annual Salary (in K)",
+            tickfont_size=15,
+            tickcolor='black',
             title_font={"size": 20},
             title_standoff=25)
-
         fig.show()
+
 
 if __name__ == '__main__':
     yoe_model = yoe()
