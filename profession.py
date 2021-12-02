@@ -2,21 +2,18 @@ import pandas as pd
 import os
 from collections import defaultdict
 import numpy as np
+import plotly.express as px
 
 class Technologies:
     '''
         Class containing helper functions and dataframes, dictionaries for processing different columns of dataframe
     '''
     languageDf = pd.DataFrame()
-    languageDict = defaultdict()
     databaseDf = pd.DataFrame()
-    databaseDict = defaultdict()
     platformDf = pd.DataFrame()
-    platformDict = defaultdict()
     webFrameWorkDf = pd.DataFrame()
-    webFrameWorkDict = defaultdict()
     toolsDf = pd.DataFrame()
-    toolsDict = defaultdict()
+    professionDf = pd.DataFrame(columns=['Professions', 'Annual Salary (in K)'])
 
     '''Columns of interest in the dataframe''' 
     relevantColumns = ['LanguageHaveWorkedWith', 'DatabaseHaveWorkedWith', 'PlatformHaveWorkedWith', 'WebframeHaveWorkedWith', 'ToolsTechHaveWorkedWith']
@@ -133,6 +130,16 @@ class Technologies:
         df = df[df.columns.difference(columns_to_avoid, sort = False)]
         return self.kPopularTechnologies(df, k)
 
+    def create_profession_df(self):
+        '''
+            helper function to add data to professionDf
+            ProfessionDf contains information on careers with their corresponding salaries
+        '''
+        for prof in self.interested_professions:
+            temp = self.languageDf[self.languageDf['DevType'] == prof][['DevType', 'abs_comp_k']]
+            temp.rename(columns={'DevType':'Professions', 'abs_comp_k': 'Annual Salary (in K)'}, inplace=True)
+            self.professionDf = self.professionDf.append(temp)
+
     def to_1D(self, series):
         '''
             Helper function to convert a column of lists to a 1D series
@@ -186,22 +193,120 @@ class Technologies:
 
         if(column == 'LanguageHaveWorkedWith'):
             self.languageDf = bool_df
-            self.languageDict = value_dict
+            self.create_profession_df()
         elif(column == 'DatabaseHaveWorkedWith'):
             self.databaseDf = bool_df
-            self.databaseDict = value_dict
         elif(column == 'PlatformHaveWorkedWith'):
             self.platformDf = bool_df
-            self.platformDict = value_dict
         elif(column == 'WebframeHaveWorkedWith'):
             self.webFrameWorkDf = bool_df
-            self.webFrameWorkDict = value_dict
         elif(column == 'ToolsTechHaveWorkedWith'):
             self.toolsDf = bool_df
-            self.toolsDict = value_dict
         else:
             print('Wrong key')
 
+def plotly_bar(input_dict: dict,rel_cols:list, dict_key: str, x_axis: str, y_axis: str, title: str, angle=-45):
+    '''
+        Helper function to return plotly figure for bar graph
+        :param input_dict: input dictionary
+        :type input_dict: dict
+        :param x_axis: label for x_axis
+        :type x_axis: str
+        :param y_axis: label for y_axis
+        :type y_axis: str
+        :param title: title of the plot
+        :type title: str
+        :param angle: angle for label, default = -45
+        :type angle: int
+        :param k: number of entries to be shown in plot
+        :type k: int
+        :return: figure object
+    '''
+    assert(isinstance(input_dict, dict))
+    assert(isinstance(x_axis, str))
+    assert(isinstance(y_axis, str))
+    assert(isinstance(title, str))
+    assert(isinstance(angle, int))
+
+    temp_dict = defaultdict(dict)
+    for key, value in input_dict.items():
+        temp_dict[key] = value[dict_key]
+    ef = pd.DataFrame.from_dict(temp_dict).dropna()
+    ef.reset_index(level=0, inplace=True)
+    ef = ef.loc[ef['index'].isin(rel_cols)]
+    ef['Full-Stack Developers'] *= 100
+    ef['Backend Developer'] *= 100
+    ef['Data Engineer'] *= 100
+    ef['Data Scientist'] *= 100
+    fig = px.bar(ef, x="index", y=['Full-Stack Developers','Backend Developer', 'Data Engineer', 'Data Scientist'], labels= {"index": x_axis, "variable":"Legend"}, title=title, barmode="group", color_discrete_sequence=['rgba(244, 128, 36, 255)', 'rgba(34, 36, 38, 255)', 'rgba(188, 187, 187, 255)', 'rgba(244, 36, 48, 255)'])
+    fig.update_layout({
+        'paper_bgcolor':'rgba(0,0,0,0)',
+        'plot_bgcolor':'rgba(0,0,0,0)',
+        'font_color':'rgba(0,0,0,255)'
+    })
+    fig.update_xaxes(
+        tickangle=angle,
+        title_font = {"size": 20},
+        tickfont_size = 15,
+        tickcolor = 'black',
+        title_standoff = 25)
+    fig.update_yaxes(
+        title_text = y_axis,
+        title_font = {"size": 20},
+        tickfont_size = 15,
+        tickcolor = 'black',
+        title_standoff = 25)
+    return fig
+
+def plotly_box(input_df, x_axis: str, y_axis: str, title: str, angle=-45, k = 5):
+    '''
+        Helper function to return plotly figure for box plot
+        :param input_dict: input dictionary
+        :type input_dict: dict
+        :param x_axis: label for x_axis
+        :type x_axis: str
+        :param y_axis: label for y_axis
+        :type y_axis: str
+        :param title: title of the plot
+        :type title: str
+        :param angle: angle for label, default = -45
+        :type angle: int
+        :param k: number of entries to be shown in plot
+        :type k: int
+        :return: figure object
+    '''
+    assert(isinstance(input_df, pd.DataFrame))
+    assert(isinstance(x_axis, str))
+    assert(isinstance(y_axis, str))
+    assert(isinstance(title, str))
+    assert(isinstance(angle, int))
+    assert(isinstance(k, int))
+    assert(k > 0)
+    
+    a = input_df.groupby(x_axis).median().sort_values(by=y_axis,ascending=False)[:k]
+    a = a.to_dict()
+    temp_df = pd.DataFrame(columns=[x_axis, y_axis])
+    for key, value in a[y_axis].items():
+        temp_df = temp_df.append(input_df[input_df[x_axis] == key])
+            
+    fig = px.box(temp_df, x=x_axis, y=y_axis, title=title,color_discrete_sequence = ['rgba(63,68,73,1)'])
+    fig.update_layout({
+        'paper_bgcolor':'rgba(0,0,0,0)',
+        'plot_bgcolor':'rgba(0,0,0,0)',
+        'font_color':'rgba(0,0,0,255)'
+    })
+    fig.update_xaxes(
+        tickangle=angle,
+        tickfont_size = 15,
+        tickcolor = 'black',
+        title_font = {"size": 20},
+        title_standoff = 25)
+    fig.update_yaxes(
+        tickfont_size = 15,
+        tickcolor = 'black',
+        title_font = {"size": 20},
+        title_standoff = 25)
+    return fig
 
 def main():
     try:
