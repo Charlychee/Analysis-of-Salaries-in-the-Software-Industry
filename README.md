@@ -10,25 +10,25 @@ Third-Party Modules Used:
 Requires Anaconda
 
 ### Clone the Repository:
-- `git clone https://github.com/kushagraagrawal/ECE143-Group5-Project`
+- `git clone https://github.com/Charlychee/Analysis-of-Salaries-in-the-Software-Industry`
 
 ### Create a Anaconda Virtual Environment
-- `conda create --name ECE143-Group5-Project --file=requirements.txt`
+- `conda create --name AnalyzeSalaries --file=requirements.txt`
 
 ### Activate the Environment
-- `conda activate ECE143-Group5-Project`
+- `conda activate AnalyzeSalaries`
 
 ### Unzip data.zip
 
-### [Run](#file-structure) AnalysisOfSoftwareDeveloperSalary.ipynb
+### [Run](#file-structure) AnalysisOfSalariesSoftwareIndustry.ipynb
 
 ### Deactivate and Remove the Environment
 - `conda deactivate`
-- `conda env remove --name ECE143-Group5-Project`
+- `conda env remove --name AnalyzeSalaries`
 
 ## File Structure
 The data we used can be found in the [data zip](./data.zip). It should be unzipped for the python files and notebooks to be able to access the data CSVs inside of it. The data folder contains data surveyed and additional information provided by [StackOverflow](https://insights.stackoverflow.com/survey).
 
-The code used to wrangle the survey data can be found in the [wrangling.py](./wrangling.py) file.
+The code used to wrangle the survey data can be found in the [wrangling](./wrangling) directory.
 
-The visualizations to our analysis can be found in the [Analysis.ipynb](./Analysis.ipynb)
+The visualizations to our analysis can be found in the [AnalysisOfSalariesSoftwareIndustry.ipynb](./AnalysisOfSalariesSoftwareIndustry.ipynb)
