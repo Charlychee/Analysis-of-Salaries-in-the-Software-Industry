@@ -43,7 +43,7 @@ class Wrangling:
 
         :return: [pd.DataFrame] Returns the csv dataset as a dataframe
         """
-        file_path = "./data/survey_results_public.csv"
+        file_path = "../data/survey_results_public.csv"
         try:
             df = pd.read_csv(file_path)
             return df
