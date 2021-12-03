@@ -13,7 +13,7 @@ Requires Anaconda
 - `git clone https://github.com/Charlychee/Analysis-of-Salaries-in-the-Software-Industry`
 
 ### Create a Anaconda Virtual Environment
-- `conda create --name AnalyzeSalaries --file=requirements.txt`
+- `conda create --name AnalyzeSalaries --file=requirements.txt -y`
 
 ### Activate the Environment
 - `conda activate AnalyzeSalaries`
